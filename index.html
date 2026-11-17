@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>學習網頁</title>
+<meta name="description" content="系列學習網頁：先答三題、看動畫、動手算、再答一次。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23151B2B'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='40' text-anchor='middle' fill='%23C792EA'%3E%E2%88%97%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{
+  --bg:#0A0E17; --surface:#151B2B; --surface2:#1B2236; --line:#263046; --axis:#7A8399;
+  --text:#ECEFF4; --dim:#9AA3B5; --accent:#4FD1E8;
+  --x:#58C4DD; --z:#83C167; --off:#F4D35E; --g:#FF8C42; --int:#FFFFFF; --r:#C792EA;
+  --data:#B9F3C4; --noise:#7F8CFF; --t:#F15BB5; --flow:#2EC4B6; --warn:#EF6F6C; --ok:#83C167;
+  --radius:12px; --maxw:1120px;
+  --f-head:"LXGW WenKai TC","Noto Sans TC",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Heiti TC",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f-body);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:var(--x);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit;color:inherit;cursor:pointer}
+h1,h2,h3{font-family:var(--f-head);line-height:1.3;margin:0}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+.mono{font-family:var(--f-mono)}
+.dim{color:var(--dim)}
+.c-f,.c-z{color:var(--z)} .c-g{color:var(--g)} .c-r{color:var(--r)} .c-x{color:var(--x)} .c-off{color:var(--off)} .c-int{color:var(--int)}
+
+/* header */
+header.top{position:sticky;top:0;z-index:20;background:rgba(11,15,26,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}
+.brand{font-family:var(--f-head);font-weight:700;color:var(--text);font-size:18px;white-space:nowrap}
+.brand b{color:var(--r);font-family:Georgia,serif;font-weight:400;margin:0 2px}
+.brand:hover{text-decoration:none}
+nav.main{display:flex;gap:4px}
+nav.main a{color:var(--dim);padding:6px 12px;border-radius:8px;font-size:14px;white-space:nowrap}
+nav.main a:hover{color:var(--text);background:var(--surface);text-decoration:none}
+nav.main a.on{color:var(--bg);background:var(--accent)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:8px 16px;border-radius:10px;font-size:14px;font-weight:500;text-decoration:none!important;transition:border-color .15s,background .15s}
+.btn:hover{border-color:var(--axis)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent}
+.btn.small{padding:5px 12px;font-size:13px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;padding:48px 0 40px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+.hero h1{font-size:clamp(34px,5vw,54px);margin:14px 0 16px}
+.hero h1 .hl{color:var(--accent)}
+.hero p.lead{color:var(--dim);font-size:16.5px;margin:0 0 22px;max-width:34em}
+.hero .actions{display:flex;flex-wrap:wrap;gap:10px}
+.hero>*{min-width:0}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;position:relative}
+.stage canvas{width:100%;aspect-ratio:1/1;display:block;border-radius:10px;background:var(--bg)}
+.stage .tlabel{position:absolute;top:22px;left:24px;font-family:var(--f-mono);font-size:13px;color:var(--t)}
+.stage .flabel{position:absolute;bottom:92px;right:24px;font-size:15px;color:var(--text);background:rgba(11,15,26,.7);padding:2px 8px;border-radius:6px}
+.stage .ctrl{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13px;color:var(--dim)}
+.stage input[type=range]{flex:1;accent-color:var(--t)}
+.stage .ends{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-top:2px}
+
+/* 原課程對照與路線總覽 */
+.srcline{font-size:12px;color:var(--dim);font-family:var(--f-mono)}
+.srcrow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;font-size:13px}
+.rphase{margin-bottom:30px}
+.rlist{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);margin-left:22px}
+.rrow{display:grid;grid-template-columns:auto 1fr 150px;gap:14px;align-items:start;padding:12px 0 12px 0;position:relative}
+.rrow+.rrow{border-top:1px solid var(--line)}
+.rdot{margin-left:-24px;font-family:var(--f-mono);font-size:12px;padding:2px 8px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.rdot.live{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.rdot.done{border-color:var(--accent);color:var(--accent)}
+.rmain .dim{font-size:14px}
+.rside{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:12.5px}
+.rside .pbar{width:100%}
+.rstat.live{color:var(--ok)} .rstat.done{color:var(--accent)} .rstat.plan{color:var(--dim)}
+@media (max-width:640px){.rrow{grid-template-columns:auto 1fr}.rside{grid-column:2;align-items:flex-start}}
+
+/* sections */
+section.block{padding:28px 0}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.sec-head h2{font-size:24px;border-bottom:3px solid var(--accent);padding-bottom:2px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.step .k{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
+.step h3{font-size:18px;margin:4px 0 6px}
+.step p{margin:0;color:var(--dim);font-size:14px;line-height:1.65}
+
+.phase{margin-bottom:28px}
+.phase-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:12px}
+.phase-head h3{font-size:19px}
+.phase-head .rng{font-family:var(--f-mono);font-size:12px;color:var(--bg);background:var(--r);padding:1px 8px;border-radius:99px}
+.phase-head p{margin:0;color:var(--dim);font-size:14px;flex-basis:100%}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.ucard{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;color:var(--text);text-decoration:none!important;transition:transform .15s,border-color .15s}
+.ucard:hover{transform:translateY(-2px);border-color:var(--axis)}
+.thumb{position:relative;aspect-ratio:16/9;background:radial-gradient(120% 90% at 80% 10%,#232a52 0%,var(--bg) 70%);display:flex;align-items:flex-end;padding:12px;overflow:hidden}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb .epn{font-family:var(--f-mono);font-size:42px;font-weight:600;color:rgba(236,239,244,.14);position:absolute;right:12px;top:4px}
+.thumb .badge{position:relative;font-size:12px;padding:2px 9px;border-radius:99px;background:rgba(11,15,26,.82);border:1px solid var(--line);color:var(--dim)}
+.badge.live{color:var(--bg)!important;background:var(--ok)!important;border-color:var(--ok)!important}
+.badge.done{color:var(--accent)!important;border-color:rgba(244,211,94,.5)!important}
+.thumb .dur{position:absolute;right:10px;bottom:10px;font-family:var(--f-mono);font-size:12px;background:rgba(0,0,0,.7);padding:1px 6px;border-radius:4px}
+.ucard .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px;flex:1}
+.ucard .meta{font-family:var(--f-mono);font-size:11.5px;color:var(--dim)}
+.ucard h4{margin:0;font-family:var(--f-head);font-size:17px;line-height:1.4}
+.ucard .tags{font-size:13px;color:var(--dim)}
+.pbar{height:4px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:auto}
+.pbar i{display:block;height:100%;background:var(--r)}
+.ucard .pbar{margin-top:10px}
+
+/* unit page */
+.crumb{font-size:13px;color:var(--dim);padding:20px 0 6px}
+.crumb a{color:var(--dim)}
+.uhead{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding-bottom:18px}
+.uhead .tier{font-family:var(--f-mono);font-size:12px;color:var(--accent);letter-spacing:.04em}
+.uhead h1{font-size:clamp(26px,3.6vw,38px);margin:6px 0 8px}
+.uhead .hook{color:var(--dim);margin:0}
+.uhead .prog{min-width:150px;text-align:right;font-size:13px;color:var(--dim)}
+.uhead .prog .pbar{margin-top:6px}
+.fbox{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--r);border-radius:10px;padding:6px 16px;overflow-x:auto;margin-bottom:18px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs a{padding:10px 16px;color:var(--dim);border-bottom:2px solid transparent;white-space:nowrap;font-size:15px}
+.tabs a:hover{color:var(--text);text-decoration:none}
+.tabs a.on{color:var(--text);border-bottom-color:var(--accent)}
+.tabs a .n{font-family:var(--f-mono);font-size:11px;background:var(--line);padding:0 6px;border-radius:99px;margin-left:4px}
+.panel{padding:22px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px}
+.card h3{font-size:19px;margin-bottom:6px}
+.card .sub{color:var(--dim);font-size:14px;margin:0 0 12px}
+.card.locked{opacity:.6}
+ol.qs{padding-left:22px;margin:0}
+ol.qs li{margin-bottom:14px}
+textarea{width:100%;min-height:72px;margin-top:6px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:10px;font:inherit;font-size:14.5px;resize:vertical}
+textarea:focus,input:focus{outline:2px solid var(--x);outline-offset:1px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ans{background:var(--bg);border-left:3px solid var(--ok);border-radius:6px;padding:10px 12px;margin-top:8px;font-size:14.5px}
+.ans .lbl{font-size:12px;color:var(--dim);display:block}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.cmp div{background:var(--bg);border-radius:6px;padding:8px 10px;font-size:13.5px;white-space:pre-wrap;color:var(--dim)}
+.cmp div b{display:block;font-size:12px;color:var(--text);font-weight:500}
+.terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.term{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.term .zh{font-weight:700}
+.term .en{font-family:var(--f-mono);font-size:12px;color:var(--dim)}
+.term .m{color:var(--r);margin:4px 0;min-height:1.6em}
+.term .d{font-size:13.5px;color:var(--dim);line-height:1.6}
+.prac{border-top:1px solid var(--line);padding:12px 0}
+.prac:first-of-type{border-top:0}
+.prac input{width:120px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:6px 10px;font-family:var(--f-mono)}
+.fb{font-size:14px}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--warn)}
+.hint{font-size:14px;color:var(--dim);background:var(--bg);border-radius:6px;padding:8px 10px;margin-top:8px}
+
+/* video */
+.player{position:relative;aspect-ratio:16/9;background:#000;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line)}
+.player iframe,.player video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px;background:repeating-linear-gradient(135deg,var(--surface) 0 14px,#171e31 14px 28px);border:2px dashed var(--line);border-radius:var(--radius)}
+.placeholder .ic{font-size:40px;line-height:1}
+.placeholder h3{font-size:22px}
+.placeholder p{margin:0;color:var(--dim);font-size:14px;max-width:30em}
+.placeholder code{font-family:var(--f-mono);font-size:12px;background:var(--bg);padding:2px 8px;border-radius:6px;color:var(--accent)}
+.vgrid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+.seclist{list-style:none;margin:0;padding:0}
+.seclist li button{width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);padding:10px 4px;display:grid;grid-template-columns:62px 1fr;gap:8px;align-items:baseline}
+.seclist li button:hover:not([disabled]){background:var(--surface2)}
+.seclist li button[disabled]{cursor:default}
+.seclist .ts{font-family:var(--f-mono);font-size:13px;color:var(--x)}
+.seclist .sl{font-size:12px;color:var(--dim);display:block}
+.seclist li.cur button{background:var(--surface2)}
+.note-est{font-size:12.5px;color:var(--dim);margin-top:8px}
+
+/* notes */
+.notes .card h3{color:var(--accent);font-size:18px}
+.notes .card ul{margin:6px 0 0;padding-left:20px}
+.notes details{margin-top:6px}
+.notes summary{cursor:pointer;color:var(--x)}
+.next{display:flex;gap:10px;align-items:center;background:linear-gradient(90deg,rgba(199,146,234,.15),transparent);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px}
+
+/* flashcards */
+.flip{perspective:1200px;max-width:520px;margin:0 auto}
+.flip .inner{position:relative;height:260px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+.flip.on .inner{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden;background:var(--surface);border:1px solid var(--line);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;text-align:center}
+.flip .back{transform:rotateY(180deg);border-color:var(--r)}
+.flip .face .big{font-family:var(--f-head);font-size:34px}
+.flip .face .en{font-family:var(--f-mono);color:var(--dim)}
+.flip .face .m{font-size:22px;color:var(--r)}
+.flip .face .d{color:var(--dim)}
+.flip .tag{position:absolute;top:12px;left:16px;font-size:12px;color:var(--dim)}
+.fcbar{display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+
+/* quiz */
+.qitem{border-top:1px solid var(--line);padding:16px 0}
+.qitem:first-child{border-top:0;padding-top:0}
+.qitem .qq{font-weight:500;margin-bottom:8px}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:14.5px}
+.opt:hover:not([disabled]){border-color:var(--axis)}
+.opt[disabled]{cursor:default}
+.opt.right{border-color:var(--ok);background:rgba(131,193,103,.12)}
+.opt.wrong{border-color:var(--warn);background:rgba(239,111,108,.12)}
+.why{font-size:14px;color:var(--dim);margin-top:8px}
+.score{font-family:var(--f-mono);font-size:28px;color:var(--accent)}
+
+/* unit foot */
+.ufoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding:18px 0 8px}
+
+/* glossary & me */
+.search{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:10px 14px;font:inherit}
+table.gl{width:100%;border-collapse:collapse;margin-top:16px;font-size:14.5px}
+table.gl th{text-align:left;font-weight:500;color:var(--dim);font-size:13px;border-bottom:1px solid var(--line);padding:8px}
+table.gl td.mono{overflow-wrap:anywhere}
+table.gl td{border-bottom:1px solid var(--line);padding:10px 8px;vertical-align:top}
+table.gl td.m{color:var(--r)}
+table.gl .ep a{font-family:var(--f-mono);font-size:12px;margin-right:6px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.stat .v{font-family:var(--f-mono);font-size:26px;color:var(--accent)}
+.stat .l{font-size:13px;color:var(--dim)}
+.ok{color:var(--ok)}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0 40px;color:var(--dim);font-size:13px}
+.katex{font-size:1.05em}
+.fbox .katex-display{margin:.6em 0}
+
+/* code (Cypher) */
+/* 關掉連字：學員要照打 -> 和 >=，不能看到 → 和 ≥ */
+pre.cy,code,.mono,.gout,.term .en,.flip .face .en,.seclist .ts{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+.fbox.code{border-left-color:var(--x);padding:12px 16px}
+pre.cy{margin:0;font-family:var(--f-mono);font-size:14px;line-height:1.65;white-space:pre;overflow-x:auto;color:var(--text)}
+.notes pre.cy,.card pre.cy{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
+.cy .kw{color:var(--x);font-weight:600} .cy .lb{color:var(--off)} .cy .rt{color:var(--r)} .cy .st{color:var(--data)} .cy .nu{color:var(--g)} .cy .cm{color:var(--axis);font-style:italic} .cy .pm{color:var(--t)}
+code.ic{font-family:var(--f-mono);font-size:.9em;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:0 5px;color:var(--data)}
+.term .m code,.flip .m code,table.gl td.m code{font-family:var(--f-mono);font-size:13px;color:var(--r);background:none;border:0;padding:0}
+.flip .face .m code{font-size:18px}
+.cwrap{position:relative}
+.cwrap .copy{position:absolute;top:8px;right:8px;font-size:12px;padding:2px 10px;border-radius:6px;background:var(--surface2);border:1px solid var(--line);color:var(--dim)}
+.cwrap .copy:hover{color:var(--text);border-color:var(--axis)}
+.before{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.before .card{margin:0;min-width:0}
+.before .card p{margin:0 0 8px;color:var(--dim);font-size:14.5px}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;gap:24px;padding-top:28px}
+  .steps{grid-template-columns:1fr 1fr}
+  .vgrid{grid-template-columns:1fr}
+  .uhead{grid-template-columns:1fr}
+  .uhead .prog{text-align:left}
+  .stats{grid-template-columns:1fr 1fr}
+}
+@media (max-width:520px){
+  nav.main a{padding:6px 6px;font-size:13px}
+  nav.main{gap:2px}
+  .brand .long{display:none}
+  .steps{grid-template-columns:1fr}
+  .cmp{grid-template-columns:1fr}
+  table.gl .hide-s{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" id="brand" href="#home"></a>
+    <nav class="main" id="nav">
+      <a href="#home" data-nav="home">單元</a>
+      <a href="#route" data-nav="route">學習路線</a>
+      <a href="#glossary" data-nav="glossary">術語表</a>
+      <a href="#me" data-nav="me">我的學習</a>
+    </nav>
+  </div>
+</header>
+<main id="app" class="wrap"></main>
+<footer>
+  <div class="wrap" id="footerText"></div>
+</footer>
+
+<script src="videos.js"></script>
+<script src="content.js"></script>
+<script>
+(() => {
+"use strict";
+const UNITS = window.UNITS, SERIES = window.SERIES;
+const LINKS = window.VIDEO_LINKS || {};
+const app = document.getElementById("app");
+const byId = Object.fromEntries(UNITS.map(u => [u.id, u]));
+const pad2 = n => String(n).padStart(2, "0");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = s => { s = Math.floor(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return h ? `${h}:${pad2(m)}:${pad2(x)}` : `${m}:${pad2(x)}`; };
+
+/* ---------- storage ---------- */
+// 同一個 github.io 網域下的所有專案網站共用 localStorage，每個系列一定要用不同的 storeKey
+const KEY = SERIES.storeKey || ("series-progress-" + (SERIES.short || "x"));
+document.getElementById("brand").innerHTML = SERIES.brand || `${esc(SERIES.short)}<span class="long"> 學習網頁</span>`;
+document.getElementById("footerText").innerHTML = SERIES.footer || `《${esc(SERIES.title)}》學習網頁 · 進度只存在這台裝置的瀏覽器裡`;
+if (SERIES.description) document.querySelector('meta[name="description"]').content = SERIES.description;
+let S = {};
+try { S = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { S = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const st = id => (S[id] ||= { pre: [], preSaved: false, post: [], postSaved: false, prac: {}, quiz: {}, quizBest: null, known: [], done: false });
+
+/* ---------- video helpers ---------- */
+const ytId = v => { if (!v) return ""; v = String(v).trim(); if (/^[\w-]{11}$/.test(v)) return v; const m = v.match(/(?:v=|youtu\.be\/|embed\/|shorts\/|live\/)([\w-]{11})/); return m ? m[1] : ""; };
+const vid = u => { const L = LINKS[u.id] || {}; return { yt: ytId(L.youtube), mp4: (L.mp4 || "").trim(), noVoice: ytId(L.noVoice), short: ytId(L.short), dur: L.duration || u.estDur, times: Array.isArray(L.sections) && L.sections.length === u.sections.length ? L.sections : null }; };
+const hasVideo = u => { const v = vid(u); return !!(v.yt || v.mp4); };
+const secTimes = u => vid(u).times || u.sections.map(s => s.t);
+
+/* ---------- progress ---------- */
+function progress(u) {
+  const s = st(u.id);
+  const pracOk = u.practice.items.every((_, i) => s.prac[i] === true);
+  const quizDone = Object.keys(s.quiz).length === u.quiz.length;
+  const parts = [s.preSaved, pracOk, quizDone, s.postSaved, s.done];
+  return { parts, pct: Math.round(parts.filter(Boolean).length / parts.length * 100) };
+}
+
+/* ---------- code ---------- */
+// 簡易 Cypher 上色：先 escape，再依序標註註解、字串、標籤／關係型別、參數、數字、關鍵字
+const CY_KW = "MATCH|OPTIONAL|WHERE|RETURN|CREATE|MERGE|ON|SET|REMOVE|DELETE|DETACH|WITH|UNWIND|AS|ORDER|BY|DESC|ASC|SKIP|LIMIT|DISTINCT|AND|OR|NOT|IN|IS|NULL|STARTS|ENDS|CONTAINS|CALL|YIELD|LOAD|CSV|HEADERS|FROM|FOR|REQUIRE|UNIQUE|CONSTRAINT|INDEX|VECTOR|SHOW|EXPLAIN|PROFILE|SHORTEST|EXISTS|COUNT|CASE|WHEN|THEN|ELSE|END|TRUE|FALSE|IF|OPTIONS";
+function hl(code) {
+  const toks = [];
+  // 佔位符只用私用區字元，避免後面的數字／關鍵字規則再比對到它
+  const keep = (cls, txt) => { toks.push(`<span class="${cls}">${txt}</span>`); return "" + String.fromCharCode(0xE100 + toks.length - 1) + ""; };
+  let s = esc(code);
+  s = s.replace(/\/\/[^\n]*/g, m => keep("cm", m));
+  s = s.replace(/&#39;[^\n]*?&#39;|&quot;[^\n]*?&quot;/g, m => keep("st", m));
+  s = s.replace(/:`?[A-Za-z_][\w]*`?/g, m => keep(/^:[A-Z_]+$/.test(m) && m.length > 2 ? "rt" : "lb", m));
+  s = s.replace(/\$[A-Za-z_]\w*/g, m => keep("pm", m));
+  s = s.replace(/\b\d+(?:\.\d+)?\b/g, m => keep("nu", m));
+  s = s.replace(new RegExp(`\\b(?:${CY_KW})\\b`, "g"), m => keep("kw", m));
+  const back = x => x.replace(/([-])/g, (_, c) => toks[c.charCodeAt(0) - 0xE100]);
+  return back(back(s));
+}
+const termSym = t => t.c ? `<code>${esc(t.c)}</code>` : t.m ? `$${t.m}$` : "";
+// 筆記裡的 <pre class="cy"> 自動上色並加「複製」按鈕
+function decorateCode(root) {
+  root.querySelectorAll("pre.cy[data-raw]").forEach(pre => {
+    const raw = pre.textContent;
+    pre.innerHTML = pre.classList.contains("plain") ? esc(raw) : hl(raw); pre.removeAttribute("data-raw");
+    const w = document.createElement("div"); w.className = "cwrap";
+    pre.replaceWith(w); w.appendChild(pre);
+    const b = document.createElement("button"); b.className = "copy"; b.type = "button"; b.textContent = "複製";
+    b.addEventListener("click", () => {
+      const done = () => { b.textContent = "已複製"; setTimeout(() => b.textContent = "複製", 1400); };
+      (navigator.clipboard ? navigator.clipboard.writeText(raw) : Promise.reject()).then(done).catch(() => {
+        const r = document.createRange(); r.selectNodeContents(pre); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent = "已選取，按 ⌘C／Ctrl+C";
+      });
+    });
+    w.appendChild(b);
+  });
+}
+
+/* ---------- math ---------- */
+function math(el) {
+  if (window.renderMathInElement) {
+    renderMathInElement(el, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false });
+  }
+}
+
+/* ---------- views ---------- */
+function statusBadge(u) {
+  if (hasVideo(u)) return `<span class="badge live">▶ 可觀看</span>`;
+  if (u.status === "done") return `<span class="badge done">影片完成・連結待上架</span>`;
+  return `<span class="badge">規劃中・可先看原課程</span>`;
+}
+/* ---------- 原課程對照（u.src：[{label, id}]） ---------- */
+const srcLinks = (u, cls = "btn small ghost") => (u.src || []).map(s => `<a class="${cls}" href="https://www.youtube.com/watch?v=${esc(s.id)}" target="_blank" rel="noopener">${esc(s.label)} ↗</a>`).join("");
+const srcText = u => (u.src || []).map(s => esc(s.label)).join("、");
+function unitCard(u) {
+  const v = vid(u), p = progress(u);
+  const img = v.yt ? `<img src="https://i.ytimg.com/vi/${v.yt}/hqdefault.jpg" alt="" loading="lazy">` : "";
+  return `<a class="ucard" href="#${u.id}">
+    <div class="thumb">${img}<span class="epn">EP${pad2(u.no)}</span>${statusBadge(u)}<span class="dur">${esc(v.dur)}</span></div>
+    <div class="body">
+      <div class="meta">EP${pad2(u.no)} · ${esc(u.tier.split("｜")[0])}</div>
+      <h4>${esc(u.title)}</h4>
+      <div class="tags">${esc(u.tags)}</div>
+      ${u.src ? `<div class="srcline">原課程：${srcText(u)}</div>` : ""}
+      <div class="pbar" title="學習進度 ${p.pct}%"><i style="width:${p.pct}%"></i></div>
+    </div></a>`;
+}
+
+function viewHome() {
+  const playlist = window.SERIES_PLAYLIST ? `<a class="btn ghost" href="${esc(window.SERIES_PLAYLIST)}" target="_blank" rel="noopener">系列播放清單 ↗</a>` : "";
+  const ready = UNITS.filter(hasVideo).length;
+  const tr = ytId(window.SERIES_TRAILER);
+  const trailer = tr ? `<a class="btn" href="https://www.youtube.com/watch?v=${tr}" target="_blank" rel="noopener">▶ 系列前導片 ↗</a>` : "";
+  const phases = SERIES.phases.map(ph => `
+    <div class="phase">
+      <div class="phase-head"><h3>${esc(ph.name)}</h3><span class="rng">${ph.range}</span><p>${esc(ph.desc)}</p></div>
+      <div class="cards">${UNITS.filter(u => u.phase === ph.id).map(unitCard).join("")}</div>
+    </div>`).join("");
+  app.innerHTML = `
+  <section class="hero">
+    <div>
+      <div class="eyebrow">${esc(SERIES.eyebrow || "")}</div>
+      <h1>${SERIES.heroTitle || esc(SERIES.title)}</h1>
+      <p class="lead">${esc(SERIES.lead || SERIES.tagline || "")}</p>
+      ${SERIES.source ? `<p class="sub">延續自：<a href="${esc(SERIES.source.url)}" target="_blank" rel="noopener">${esc(SERIES.source.name)}</a>${SERIES.source.license ? "（" + esc(SERIES.source.license) + "）" : ""}</p>` : ""}
+      <div class="actions">
+        ${trailer}
+        <a class="btn primary" href="#${UNITS[0].id}">從 EP${UNITS[0].no} 開始</a>
+        <a class="btn" href="#glossary">術語表</a>
+        <a class="btn" href="#me">我的學習</a>
+        ${playlist}
+      </div>
+    </div>
+    <div class="stage" aria-label="${esc(SERIES.heroLabel || "系列主視覺動畫")}"><!-- HERO：Kuramoto 耦合振子（四種波長各 30 顆），K 越大越同步 -->
+      <canvas id="heroCanvas" width="600" height="600"></canvas>
+      <div class="tlabel" id="tLabel">r = 0.00</div>
+      <div class="flabel">$\\dot\\theta_i=\\omega_i+K\\,r\\sin(\\psi-\\theta_i)$</div>
+      <div class="ctrl"><span class="mono">K</span><input id="tSlider" type="range" min="0" max="3" step="0.01" value="0" aria-label="耦合強度 K"><button class="btn small" id="playBtn">暫停</button></div>
+      <div class="ends"><span>K = 0　各自閃爍</span><span>同步共振　K = 3</span></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="sec-head"><h2>怎麼用這個網頁</h2></div>
+    <div class="steps">
+      <div class="step"><div class="k">步驟 1</div><h3>先答三題</h3><p>打開單元的學習單，不查資料，先寫下自己的答案。</p></div>
+      <div class="step"><div class="k">步驟 2</div><h3>看影片</h3><p>中英雙語字幕；點小節時間軸可以直接跳到那一段。</p></div>
+      <div class="step"><div class="k">步驟 3</div><h3>動手算、做測驗</h3><p>學習單的練習題附提示；筆記、背誦卡、測驗幫你把重點留下來。</p></div>
+      <div class="step"><div class="k">步驟 4</div><h3>再答一次</h3><p>後測和參考答案對照，弄懂了就按「標成已完成」，首頁會記下進度。</p></div>
+    </div>
+  </section>
+
+  ${Array.isArray(SERIES.before) && SERIES.before.length ? `<section class="block">
+    <div class="sec-head"><h2>${esc(SERIES.beforeTitle || "開始之前")}</h2></div>
+    <div class="before">${SERIES.before.map(b => `<div class="card"><h3>${esc(b.h)}</h3>${b.b}</div>`).join("")}</div>
+  </section>` : ""}
+
+  <section class="block">
+    <div class="sec-head"><h2>學習路線</h2><span class="dim" style="font-size:14px">全 ${UNITS.length} 集 · 已上架 ${ready} 集 · <a href="#route">路線總覽 →</a></span></div>
+    ${phases}
+  </section>`;
+  math(app); decorateCode(app);
+  startHero();
+}
+
+function viewUnit(u, tab) {
+  const s = st(u.id), p = progress(u);
+  const idx = UNITS.indexOf(u), prev = UNITS[idx - 1], next = UNITS[idx + 1];
+  const tabs = [["sheet", "學習單"], ["video", "影片"], ["notes", "筆記"], ["cards", "背誦卡", u.terms.length], ["quiz", "測驗", u.quiz.length]];
+  const body = { sheet: tabSheet, video: tabVideo, notes: tabNotes, cards: tabCards, quiz: tabQuiz }[tab](u, s);
+  app.innerHTML = `
+  <div class="crumb"><a href="#home">單元</a> / EP${pad2(u.no)}</div>
+  <div class="uhead">
+    <div>
+      <div class="tier">EP${pad2(u.no)} · ${esc(u.tier)}</div>
+      <h1>${esc(u.title)}</h1>
+      <p class="hook">${esc(u.hook)}</p>
+      ${u.src ? `<div class="srcrow"><span class="dim">對應原課程：</span>${srcLinks(u)}</div>` : ""}
+    </div>
+    <div class="prog">學習進度 ${p.pct}%${s.done ? ` · <span class="ok">已完成</span>` : ""}<div class="pbar"><i style="width:${p.pct}%"></i></div></div>
+  </div>
+  ${u.code ? `<div class="fbox code"><pre class="cy">${hl(u.code)}</pre></div>` : u.formula ? `<div class="fbox">$$${u.formula}$$</div>` : ""}
+  <nav class="tabs">${tabs.map(([k, l, n]) => `<a href="#${u.id}/${k}" class="${k === tab ? "on" : ""}">${l}${n ? `<span class="n">${n}</span>` : ""}</a>`).join("")}</nav>
+  <div class="panel">${body}</div>
+  <div class="ufoot">
+    <div>${prev ? `<a class="btn ghost" href="#${prev.id}">← EP${pad2(prev.no)}</a>` : ""}</div>
+    <button class="btn ${s.done ? "" : "primary"}" data-act="done">${s.done ? "✓ 已完成（點一下取消）" : "標成已完成"}</button>
+    <div>${next ? `<a class="btn ghost" href="#${next.id}">EP${pad2(next.no)} →</a>` : `<a class="btn ghost" href="#home">回首頁</a>`}</div>
+  </div>`;
+  math(app); decorateCode(app);
+  if (tab === "video") bindPlayer(u);
+}
+
+function tabSheet(u, s) {
+  const pre = u.pre.map((q, i) => `<li>${q.q}${s.preSaved ? `<div class="cmp"><div><b>前測</b>${esc(s.pre[i] || "（空白）")}</div></div>` : `<textarea data-pre="${i}" placeholder="先寫下你現在的想法，不查資料">${esc(s.pre[i] || "")}</textarea>`}</li>`).join("");
+  const terms = u.terms.map(t => `<div class="term"><div class="zh">${esc(t.zh)}</div><div class="en">${esc(t.en)}</div><div class="m">${termSym(t)}</div><div class="d">${esc(t.d)}</div></div>`).join("");
+  const prac = u.practice.items.map((it, i) => {
+    const r = s.prac[i];
+    return `<div class="prac" data-pi="${i}">
+      <div>${i + 1}. ${it.q}</div>
+      <div class="row" style="margin-top:8px"><input type="text" inputmode="decimal" aria-label="第 ${i + 1} 題答案" data-pin="${i}" value="${r === true ? it.a : ""}"><button class="btn small" data-act="check" data-i="${i}">檢查</button>
+      <span class="fb ${r === true ? "ok" : r === false ? "no" : ""}" data-fb="${i}">${r === true ? "✓ 正確" : r === false ? "✗ 再想想" : ""}</span>
+      <button class="btn small ghost" data-act="hint" data-i="${i}">提示</button></div>
+      <div class="hint" data-hint="${i}" hidden>${it.hint}</div>
+    </div>`;
+  }).join("");
+  let post;
+  if (!s.preSaved) post = `<div class="card locked"><h3>後測：看完影片再答一次</h3><p class="sub">先完成前測，後測才會打開。</p></div>`;
+  else if (!s.postSaved) post = `<div class="card"><h3>後測：看完影片再答一次</h3><p class="sub">同樣三題。寫完存下後，會出現你的前後對照與參考答案。</p>
+      <ol class="qs">${u.pre.map((q, i) => `<li>${q.q}<textarea data-post="${i}">${esc(s.post[i] || "")}</textarea></li>`).join("")}</ol>
+      <button class="btn primary" data-act="savePost">存下後測</button></div>`;
+  else post = `<div class="card"><h3>後測與參考答案</h3><p class="sub">比較前後兩次的差異，再看參考答案。</p>
+      <ol class="qs">${u.pre.map((q, i) => `<li>${q.q}<div class="cmp"><div><b>前測</b>${esc(s.pre[i] || "（空白）")}</div><div><b>後測</b>${esc(s.post[i] || "（空白）")}</div></div><div class="ans"><span class="lbl">參考答案</span>${q.a}</div></li>`).join("")}</ol>
+      <button class="btn small ghost" data-act="redoPost">重寫後測</button></div>`;
+  return `
+  <div class="card"><h3>前測：看影片之前先答一次</h3><p class="sub">先寫下答案，不查資料。看完影片再答同樣三題，比較自己的差異。</p>
+    <ol class="qs">${pre}</ol>
+    ${s.preSaved ? `<span class="ok">✓ 前測已存下</span>` : `<button class="btn primary" data-act="savePre">存下前測</button>`}
+  </div>
+  <div class="card"><h3>這一集的 ${u.terms.length} 個詞</h3><p class="sub">這些詞已經做成背誦卡；全系列的詞可在術語表查。</p><div class="terms">${terms}</div></div>
+  <div class="card"><h3>練習：動手算一次</h3><p class="sub">${u.practice.intro}</p>${prac}</div>
+  ${post}`;
+}
+
+function tabVideo(u) {
+  const v = vid(u), times = secTimes(u), N = u.sections.length, live = !!(v.yt || v.mp4);
+  let player;
+  if (v.yt) player = `<iframe id="ytFrame" src="https://www.youtube-nocookie.com/embed/${v.yt}?rel=0&playsinline=1" title="EP${pad2(u.no)} ${esc(u.title)}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  else if (v.mp4) player = `<video id="mp4" controls preload="metadata" src="${esc(v.mp4)}"></video>`;
+  else player = `<div class="placeholder"><div class="ic">🎬</div><h3>影片連結預留</h3>
+      <p>${u.status === "done" ? "這一集已經完成剪輯，正在準備上架。" : "這一集正在製作中。"}上架後這裡會直接播放，右邊的${u.segWord}時間軸也能點擊跳轉。</p>
+      ${u.src ? `<div class="row" style="justify-content:center">${srcLinks(u, "btn small")}</div>` : `<code>videos.js → ${u.id}.youtube</code>`}</div>`;
+  const list = u.sections.map((sec, i) => `<li><button ${live ? "" : "disabled"} data-act="seek" data-t="${times[i]}"><span class="ts">${fmt(times[i])}</span><span><span class="sl">${u.segWord} ${i + 1}／${N}</span>${esc(sec.title)}</span></button></li>`).join("");
+  const links = [
+    v.yt ? `<a class="btn small" href="https://www.youtube.com/watch?v=${v.yt}" target="_blank" rel="noopener">在 YouTube 開啟 ↗</a>` : "",
+    v.noVoice ? `<a class="btn small ghost" href="https://www.youtube.com/watch?v=${v.noVoice}" target="_blank" rel="noopener">無旁白版 ↗</a>` : "",
+    v.short ? `<a class="btn small ghost" href="https://www.youtube.com/shorts/${v.short}" target="_blank" rel="noopener">直式重點版 ↗</a>` : ""
+  ].join("");
+  return `<div class="vgrid">
+    <div><div class="player">${player}</div>${links ? `<div class="row" style="margin-top:12px">${links}</div>` : ""}</div>
+    <div class="card" style="margin:0"><h3>${u.segWord}時間軸</h3><p class="sub">片長 ${esc(v.dur)} · 共 ${N} 個${u.segWord}</p>
+      <ul class="seclist">${list}</ul>
+      ${vid(u).times ? "" : `<p class="note-est">時間依腳本預估，正式版上架後更新。</p>`}
+    </div></div>
+    <div class="card" style="margin-top:16px"><h3>看影片時注意</h3><p class="sub" style="margin:0">帶著學習單的前測三題去看；看完回到學習單做練習與後測。</p></div>`;
+}
+
+function tabNotes(u) {
+  return `<div class="notes">${u.notes.map(n => `<div class="card"><h3>${esc(n.h)}</h3><div>${n.b}</div></div>`).join("")}
+    <div class="next"><span class="mono" style="color:var(--r)">NEXT</span><span>${esc(u.next)}</span></div></div>`;
+}
+
+let fc = { id: null, i: 0, flipped: false };
+function tabCards(u, s) {
+  if (fc.id !== u.id) fc = { id: u.id, i: 0, flipped: false };
+  const t = u.terms[fc.i], known = s.known.includes(fc.i);
+  return `<p class="dim" style="text-align:center;margin-top:0">點卡片翻面 · 已記住 ${s.known.length}／${u.terms.length}</p>
+  <div class="flip ${fc.flipped ? "on" : ""}" data-act="flip" role="button" tabindex="0" aria-label="翻面">
+    <div class="inner">
+      <div class="face front"><span class="tag">${fc.i + 1}／${u.terms.length}${known ? " · ✓ 記住了" : ""}</span><div class="big">${esc(t.zh)}</div><div class="en">${esc(t.en)}</div></div>
+      <div class="face back"><span class="tag">${esc(t.zh)}</span>${(t.c || t.m) ? `<div class="m">${termSym(t)}</div>` : ""}<div class="d">${esc(t.d)}</div></div>
+    </div>
+  </div>
+  <div class="fcbar">
+    <button class="btn" data-act="fcPrev">← 上一張</button>
+    <button class="btn" data-act="fcNo">還不熟</button>
+    <button class="btn primary" data-act="fcYes">記住了</button>
+    <button class="btn" data-act="fcNext">下一張 →</button>
+  </div>`;
+}
+
+function tabQuiz(u, s) {
+  const answered = Object.keys(s.quiz).length;
+  const correct = u.quiz.filter((q, i) => s.quiz[i] === q.a).length;
+  const items = u.quiz.map((q, i) => {
+    const a = s.quiz[i], done = a !== undefined;
+    return `<div class="qitem"><div class="qq">${i + 1}. ${q.q}</div><div class="opts">${q.o.map((o, j) => {
+      const cls = done ? (j === q.a ? "right" : j === a ? "wrong" : "") : "";
+      return `<button class="opt ${cls}" ${done ? "disabled" : ""} data-act="ans" data-q="${i}" data-o="${j}">${String.fromCharCode(65 + j)}. ${o}</button>`;
+    }).join("")}</div>${done ? `<div class="why">${a === q.a ? "✓ 答對了。" : "✗ 正確答案是 " + String.fromCharCode(65 + q.a) + "。"}${q.w}</div>` : ""}</div>`;
+  }).join("");
+  const summary = answered === u.quiz.length
+    ? `<div class="row" style="justify-content:space-between"><div><div class="score">${correct}／${u.quiz.length}</div><span class="dim">最佳紀錄 ${s.quizBest ?? correct}／${u.quiz.length}</span></div><button class="btn" data-act="quizReset">重做一次</button></div>`
+    : `<span class="dim">已作答 ${answered}／${u.quiz.length}</span>`;
+  return `<div class="card">${summary}</div><div class="card">${items}</div>`;
+}
+
+function viewRoute() {
+  const ready = UNITS.filter(hasVideo).length, made = UNITS.filter(u => u.status === "done").length;
+  const links = (SERIES.sourceLinks || []).map(l => `<a class="btn small" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`).join("");
+  const dot = u => hasVideo(u) ? "live" : u.status === "done" ? "done" : "plan";
+  const dotLabel = { live: "可觀看", done: "影片完成", plan: "規劃中" };
+  const phases = SERIES.phases.map(ph => {
+    const us = UNITS.filter(u => u.phase === ph.id);
+    return `<div class="rphase">
+      <div class="phase-head"><h3>${esc(ph.name)}</h3><span class="rng">${ph.range}</span><p>${esc(ph.desc)}</p></div>
+      <ol class="rlist">${us.map(u => { const p = progress(u), d = dot(u); return `<li class="rrow">
+        <span class="rdot ${d}" title="${dotLabel[d]}">EP${pad2(u.no)}</span>
+        <div class="rmain"><a href="#${u.id}"><b>${esc(u.title)}</b></a><div class="dim">${esc(u.hook)}</div>
+          ${u.src ? `<div class="srcrow">${srcLinks(u)}</div>` : ""}</div>
+        <div class="rside"><span class="mono dim">${esc(vid(u).dur || "")}</span><span class="rstat ${d}">${dotLabel[d]}</span><div class="pbar" title="學習進度 ${p.pct}%"><i style="width:${p.pct}%"></i></div></div>
+      </li>`; }).join("")}</ol></div>`;
+  }).join("");
+  app.innerHTML = `
+  <div class="crumb"><a href="#home">首頁</a> / 學習路線</div>
+  <div class="sec-head"><h2>學習路線</h2><span class="dim" style="font-size:14px">全 ${UNITS.length} 集 · ${SERIES.phases.length} 個階段 · 影片完成 ${made} 集、已上架 ${ready} 集</span></div>
+  <p class="dim" style="margin-top:0">${esc(SERIES.routeIntro || "")}</p>
+  ${links ? `<div class="row" style="margin-bottom:22px">${links}</div>` : ""}
+  ${phases}`;
+}
+
+function viewGlossary(q = "") {
+  const map = new Map();
+  UNITS.forEach(u => u.terms.forEach(t => {
+    const k = (t.en || t.zh).toLowerCase();
+    if (!map.has(k)) map.set(k, { ...t, eps: [] });
+    map.get(k).eps.push(u);
+  }));
+  const rows = [...map.values()];
+  app.innerHTML = `
+  <div class="crumb"><a href="#home">首頁</a> / 術語表</div>
+  <div class="sec-head"><h2>術語表</h2><span class="dim" style="font-size:14px">全系列 ${rows.length} 個詞</span></div>
+  <input class="search" id="gq" type="search" placeholder="搜尋中文、英文或描述…" value="${esc(q)}" aria-label="搜尋術語">
+  <div style="overflow-x:auto"><table class="gl"><thead><tr><th>中文</th><th>English</th><th class="hide-s">${esc(SERIES.symLabel || "符號")}</th><th>意思</th><th>出現</th></tr></thead>
+  <tbody>${rows.map(t => `<tr data-s="${esc((t.zh + " " + t.en + " " + t.d + " " + (t.c || "")).toLowerCase())}"><td><b>${esc(t.zh)}</b></td><td class="mono" style="font-size:13px">${esc(t.en)}</td><td class="m hide-s">${termSym(t)}</td><td class="dim">${esc(t.d)}</td><td class="ep">${t.eps.map(u => `<a href="#${u.id}">EP${pad2(u.no)}</a>`).join("")}</td></tr>`).join("")}</tbody></table></div>`;
+  math(app); decorateCode(app);
+  const inp = document.getElementById("gq");
+  const filt = () => { const v = inp.value.trim().toLowerCase(); app.querySelectorAll("tbody tr").forEach(tr => tr.hidden = v && !tr.dataset.s.includes(v)); };
+  inp.addEventListener("input", filt); filt();
+}
+
+function viewMe() {
+  const done = UNITS.filter(u => st(u.id).done).length;
+  const quizN = UNITS.filter(u => Object.keys(st(u.id).quiz).length === u.quiz.length).length;
+  const cardsK = UNITS.reduce((a, u) => a + st(u.id).known.length, 0), cardsT = UNITS.reduce((a, u) => a + u.terms.length, 0);
+  const avg = Math.round(UNITS.reduce((a, u) => a + progress(u).pct, 0) / UNITS.length);
+  const ck = b => b ? `<span class="ok">✓</span>` : `<span class="dim">—</span>`;
+  app.innerHTML = `
+  <div class="crumb"><a href="#home">首頁</a> / 我的學習</div>
+  <div class="sec-head"><h2>我的學習</h2></div>
+  <div class="stats">
+    <div class="stat"><div class="v">${avg}%</div><div class="l">整體進度</div></div>
+    <div class="stat"><div class="v">${done}／${UNITS.length}</div><div class="l">已完成單元</div></div>
+    <div class="stat"><div class="v">${quizN}／${UNITS.length}</div><div class="l">測驗做完</div></div>
+    <div class="stat"><div class="v">${cardsK}／${cardsT}</div><div class="l">背誦卡記住</div></div>
+  </div>
+  <div class="card" style="overflow-x:auto"><table class="gl" style="margin:0"><thead><tr><th>單元</th><th>前測</th><th>練習</th><th>測驗</th><th>後測</th><th>完成</th></tr></thead><tbody>
+  ${UNITS.map(u => { const s = st(u.id), p = progress(u); const qz = Object.keys(s.quiz).length === u.quiz.length ? `${u.quiz.filter((q, i) => s.quiz[i] === q.a).length}／${u.quiz.length}` : "—";
+    return `<tr><td><a href="#${u.id}">EP${pad2(u.no)}</a> <span class="dim">${esc(u.title)}</span></td><td>${ck(p.parts[0])}</td><td>${ck(p.parts[1])}</td><td class="mono">${qz}</td><td>${ck(p.parts[3])}</td><td>${ck(p.parts[4])}</td></tr>`; }).join("")}
+  </tbody></table></div>
+  <p class="dim" style="font-size:13px">進度只存在這台裝置的瀏覽器裡；換裝置或清除網站資料就會重來。</p>
+  <button class="btn" data-act="resetAll">清除全部進度</button>`;
+}
+
+/* ---------- player ---------- */
+function bindPlayer(u) {
+  const v = vid(u);
+  if (v.mp4) {
+    const el = document.getElementById("mp4"), times = secTimes(u);
+    el.addEventListener("timeupdate", () => {
+      let k = 0; times.forEach((t, i) => { if (el.currentTime >= t) k = i; });
+      app.querySelectorAll(".seclist li").forEach((li, i) => li.classList.toggle("cur", i === k));
+    });
+  }
+}
+function seek(u, t) {
+  const v = vid(u);
+  if (v.yt) { const f = document.getElementById("ytFrame"); f.src = `https://www.youtube-nocookie.com/embed/${v.yt}?rel=0&playsinline=1&autoplay=1&start=${Math.floor(t)}`; }
+  else if (v.mp4) { const el = document.getElementById("mp4"); el.currentTime = t; el.play().catch(() => {}); }
+  document.querySelector(".player").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+/* ---------- hero animation: Kuramoto 耦合振子（真實計算） ----------
+   dθ_i/dt = ω_i + K r sin(ψ − θ_i)，r e^{iψ} = (1/N) Σ e^{iθ_j}；ω_i ~ N(1, 0.5²)，臨界 K_c = 2/(π g(0)) ≈ 0.80 */
+let heroRAF = 0;
+function startHero() {
+  cancelAnimationFrame(heroRAF);
+  const cv = document.getElementById("heroCanvas"); if (!cv) return;
+  const ctx = cv.getContext("2d");
+  let seed = 20261118; const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const gauss = () => Math.sqrt(-2 * Math.log(1 - rnd())) * Math.cos(2 * Math.PI * rnd());
+  const COLS = [[127, 178, 255], [244, 201, 93], [255, 138, 101], [199, 146, 234]]; // 熟識、盟友、玩伴、知己
+  const N = 120, P = [];
+  for (let i = 0; i < N; i++) {
+    let x, y; do { x = rnd() * 2 - 1; y = rnd() * 2 - 1; } while (x * x + y * y > 0.92);
+    P.push({ x, y, th: rnd() * 2 * Math.PI, w: 1 + 0.5 * gauss(), g: i % 4, s: 0.7 + rnd() * 0.6 });
+  }
+  const E = []; // 近鄰連線
+  for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) { const d = Math.hypot(P[i].x - P[j].x, P[i].y - P[j].y); if (d < 0.26) E.push([i, j, d]); }
+  const slider = document.getElementById("tSlider"), btn = document.getElementById("playBtn"), lab = document.getElementById("tLabel");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let playing = !reduce, phase = 0, K = reduce ? 2.4 : 0, last = performance.now(), rr = 0;
+  btn.textContent = playing ? "暫停" : "播放";
+  slider.value = K;
+  slider.addEventListener("input", () => { playing = false; btn.textContent = "播放"; K = +slider.value; });
+  btn.addEventListener("click", () => { playing = !playing; btn.textContent = playing ? "暫停" : "播放"; phase = Math.acos(1 - 2 * Math.min(1, K / 3)); last = performance.now(); });
+  function step(dt) {
+    let cr = 0, ci = 0; for (const p of P) { cr += Math.cos(p.th); ci += Math.sin(p.th); }
+    cr /= N; ci /= N; rr = Math.hypot(cr, ci); const psi = Math.atan2(ci, cr);
+    for (const p of P) p.th += (p.w + K * rr * Math.sin(psi - p.th)) * dt;
+  }
+  function draw(now) {
+    if (!document.body.contains(cv)) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2), W = cv.clientWidth;
+    if (cv.width !== Math.round(W * dpr)) { cv.width = cv.height = Math.round(W * dpr); }
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (playing) {
+      phase += dt * 0.33; // 約 19 秒一個來回
+      const raw = (1 - Math.cos(phase)) / 2;
+      K = 3 * Math.min(1, Math.max(0, (raw - .08) / .84));
+      slider.value = K.toFixed(2);
+    }
+    const sub = 6; for (let k = 0; k < sub; k++) step(dt * 4.0 / sub);
+    const S = cv.width, cx = S / 2, cy = S / 2, R = S * 0.44;
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "#0A0E17"; ctx.fillRect(0, 0, S, S);
+    ctx.lineWidth = 1 * dpr;
+    for (const [i, j, d] of E) {
+      const c = Math.cos(P[i].th - P[j].th); if (c < 0.6) continue;
+      const a = (c - 0.6) / 0.4 * (1 - d / 0.26) * 0.55;
+      ctx.strokeStyle = `rgba(79,209,232,${a.toFixed(3)})`;
+      ctx.beginPath(); ctx.moveTo(cx + P[i].x * R, cy + P[i].y * R); ctx.lineTo(cx + P[j].x * R, cy + P[j].y * R); ctx.stroke();
+    }
+    ctx.globalCompositeOperation = "lighter";
+    for (const p of P) {
+      const b = 0.5 + 0.5 * Math.sin(p.th), col = COLS[p.g];
+      const rad = (2.2 + 4.2 * b) * p.s * dpr, X = cx + p.x * R, Y = cy + p.y * R;
+      const gr = ctx.createRadialGradient(X, Y, 0, X, Y, rad * 3.2);
+      gr.addColorStop(0, `rgba(${col[0]},${col[1]},${col[2]},${(0.25 + 0.75 * b).toFixed(3)})`);
+      gr.addColorStop(1, `rgba(${col[0]},${col[1]},${col[2]},0)`);
+      ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(X, Y, rad * 3.2, 0, 2 * Math.PI); ctx.fill();
+    }
+    ctx.globalCompositeOperation = "source-over";
+    // 秩序參數條
+    const bw = S * 0.5, bx = cx - bw / 2, by = S - 22 * dpr;
+    ctx.fillStyle = "rgba(122,131,153,.25)"; ctx.fillRect(bx, by, bw, 4 * dpr);
+    ctx.fillStyle = "rgba(79,209,232,.95)"; ctx.fillRect(bx, by, bw * rr, 4 * dpr);
+    lab.textContent = "K = " + K.toFixed(2) + "　r = " + rr.toFixed(2);
+    heroRAF = requestAnimationFrame(draw);
+  }
+  heroRAF = requestAnimationFrame(draw);
+}
+
+/* ---------- router ---------- */
+let cur = { view: "", unit: null, tab: "" };
+function route() {
+  const h = location.hash.replace(/^#/, "") || "home";
+  const [a, b] = h.split("/");
+  document.querySelectorAll("#nav a").forEach(n => n.classList.toggle("on", n.dataset.nav === (byId[a] ? "home" : a)));
+  if (byId[a]) {
+    const tab = ["sheet", "video", "notes", "cards", "quiz"].includes(b) ? b : "sheet";
+    const same = cur.unit === a;
+    cur = { view: "unit", unit: a, tab };
+    viewUnit(byId[a], tab);
+    document.title = `EP${pad2(byId[a].no)} ${byId[a].title}｜${SERIES.short}`;
+    if (!same) window.scrollTo(0, 0);
+  } else if (a === "route") { cur = { view: a }; viewRoute(); document.title = `學習路線｜${SERIES.short}`; window.scrollTo(0, 0); }
+  else if (a === "glossary") { cur = { view: a }; viewGlossary(); document.title = `術語表｜${SERIES.short}`; window.scrollTo(0, 0); }
+  else if (a === "me") { cur = { view: a }; viewMe(); document.title = `我的學習｜${SERIES.short}`; window.scrollTo(0, 0); }
+  else { cur = { view: "home" }; viewHome(); document.title = SERIES.short; window.scrollTo(0, 0); }
+}
+const rerender = () => { const y = scrollY; viewUnit(byId[cur.unit], cur.tab); window.scrollTo(0, y); };
+
+/* ---------- actions ---------- */
+app.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]"); if (!el) return;
+  const act = el.dataset.act, u = byId[cur.unit], s = u ? st(u.id) : null;
+  switch (act) {
+    case "savePre":
+      s.pre = u.pre.map((_, i) => (app.querySelector(`[data-pre="${i}"]`)?.value || "").trim());
+      if (s.pre.every(x => !x) && !confirm("三題都是空白，確定要存下前測嗎？")) return;
+      s.preSaved = true; save(); rerender(); break;
+    case "savePost":
+      s.post = u.pre.map((_, i) => (app.querySelector(`[data-post="${i}"]`)?.value || "").trim());
+      s.postSaved = true; save(); rerender(); break;
+    case "redoPost": s.postSaved = false; save(); rerender(); break;
+    case "check": {
+      const i = +el.dataset.i, it = u.practice.items[i];
+      const raw = (app.querySelector(`[data-pin="${i}"]`).value || "").replace(/，/g, ".").replace(/[^\d.\-\/eE]/g, "");
+      let v = raw.includes("/") ? raw.split("/").reduce((a, b) => a / b) : parseFloat(raw);
+      const fb = app.querySelector(`[data-fb="${i}"]`);
+      if (!isFinite(v)) { fb.className = "fb no"; fb.textContent = "請輸入數字"; return; }
+      const ok = Math.abs(v - it.a) <= it.tol;
+      s.prac[i] = ok; save();
+      fb.className = "fb " + (ok ? "ok" : "no"); fb.textContent = ok ? "✓ 正確" : "✗ 再想想（可以看提示）";
+      break;
+    }
+    case "hint": { const h = app.querySelector(`[data-hint="${el.dataset.i}"]`); h.hidden = !h.hidden; break; }
+    case "done": s.done = !s.done; save(); rerender(); break;
+    case "seek": seek(u, +el.dataset.t); break;
+    case "flip": fc.flipped = !fc.flipped; el.classList.toggle("on", fc.flipped); break;
+    case "fcPrev": fc.i = (fc.i - 1 + u.terms.length) % u.terms.length; fc.flipped = false; rerender(); break;
+    case "fcNext": fc.i = (fc.i + 1) % u.terms.length; fc.flipped = false; rerender(); break;
+    case "fcYes": if (!s.known.includes(fc.i)) s.known.push(fc.i); save(); fc.i = (fc.i + 1) % u.terms.length; fc.flipped = false; rerender(); break;
+    case "fcNo": s.known = s.known.filter(k => k !== fc.i); save(); fc.i = (fc.i + 1) % u.terms.length; fc.flipped = false; rerender(); break;
+    case "ans": {
+      s.quiz[+el.dataset.q] = +el.dataset.o;
+      if (Object.keys(s.quiz).length === u.quiz.length) { const c = u.quiz.filter((q, i) => s.quiz[i] === q.a).length; s.quizBest = Math.max(s.quizBest ?? 0, c); }
+      save(); rerender(); break;
+    }
+    case "quizReset": s.quiz = {}; save(); rerender(); break;
+    case "resetAll": if (confirm(`確定要清除全部 ${UNITS.length} 集的學習進度嗎？這個動作無法復原。`)) { S = {}; save(); viewMe(); } break;
+  }
+});
+app.addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.matches("[data-pin]")) app.querySelector(`[data-act="check"][data-i="${e.target.dataset.pin}"]`).click();
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches(".flip")) { e.preventDefault(); e.target.click(); }
+});
+app.addEventListener("input", e => { // 草稿即時保存
+  const u = byId[cur.unit]; if (!u) return; const s = st(u.id);
+  if (e.target.dataset.pre !== undefined) { s.pre[+e.target.dataset.pre] = e.target.value; save(); }
+  if (e.target.dataset.post !== undefined) { s.post[+e.target.dataset.post] = e.target.value; save(); }
+});
+
+window.addEventListener("hashchange", route);
+if (document.readyState === "complete") route(); else window.addEventListener("load", route);
+})();
+</script>
+</body>
+</html>
